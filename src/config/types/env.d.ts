@@ -4,4 +4,5 @@ export interface EnvConfig {
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
   COOKIE_NAME: string;
+  REDIS_URL: string;
 }
