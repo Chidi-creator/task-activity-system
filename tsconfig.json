@@ -30,11 +30,14 @@
       "@usecases/*": ["usecases/*"],
       "@routes/*": ["routes/*"],
       "@managers/*": ["managers/*"],
+      "@socket/*": ["socket/*"],
+      "@subscriptions/*": ["subscriptions/*"],
       "@utils/*": ["utils/*"],
       "@validation/*": ["validation/*"],
       "@providers/*": ["providers/*"],
       "@deliverymen/*": ["deliverymen/*"],
-      "@generated/*": ["generated/*"]
+      "@generated/*": ["generated/*"],
+
     }
   },
   "include": ["src/**/*"],

@@ -5,6 +5,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import authRoutes from "@deliverymen/auth.delivery";
+import taskRoutes from "@deliverymen/task.delivery";
 
 const app = express();
 const middleware = new Middleware(app);
@@ -17,6 +18,7 @@ const setUpRoutes = (middleware: Middleware) => {
   });
 
   router.use("/auth", authRoutes);
+  router.use("/tasks", taskRoutes);
 
   middleware.addMiddleware("/api/v1", router);
 };
