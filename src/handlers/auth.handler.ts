@@ -1,33 +1,40 @@
 import { Request, Response } from "express";
-import authUseCase from "@usecases/auth.usecase";
-import authService from "@services/auth.service";
+import AuthUseCase from "@usecases/auth.usecase";
+import AuthService from "@services/auth.service";
 import { responseManager } from "@managers/index";
 
 class AuthHandler {
-  async register(req: Request, res: Response): Promise<void> {
+  private authUseCase: AuthUseCase;
+  private authService: AuthService;
+
+  constructor() {
+    this.authUseCase = new AuthUseCase();
+    this.authService = new AuthService();
+  }
+  register = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await authUseCase.register(req.body);
-      authService.setSessionCookie(res, { userId: user.id, email: user.email });
+      const user = await this.authUseCase.register(req.body);
+      this.authService.setSessionCookie(res, { userId: user.id, email: user.email });
       responseManager.success(res, user, "Account created successfully", 201);
     } catch (error) {
       responseManager.handleError(res, error as Error);
     }
   }
 
-  async login(req: Request, res: Response): Promise<void> {
+   login = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await authUseCase.login(req.body);
-      authService.setSessionCookie(res, { userId: user.id, email: user.email });
+      const user = await this.authUseCase.login(req.body);
+      this.authService.setSessionCookie(res, { userId: user.id, email: user.email });
       responseManager.success(res, user, "Login successful");
     } catch (error) {
       responseManager.handleError(res, error as Error);
     }
   }
 
-  async logout(_req: Request, res: Response): Promise<void> {
-    authService.clearSessionCookie(res);
+  logout = async (_req: Request, res: Response): Promise<void> => {
+    this.authService.clearSessionCookie(res);
     responseManager.success(res, {}, "Logged out successfully");
   }
 }
 
-export default new AuthHandler();
+export default AuthHandler

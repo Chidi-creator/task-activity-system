@@ -58,4 +58,4 @@ class AuthUseCase {
   }
 }
 
-export default new AuthUseCase();
+export default AuthUseCase;

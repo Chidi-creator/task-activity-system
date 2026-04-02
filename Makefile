@@ -1,4 +1,4 @@
-.PHONY: dev dev-drop dev-logs migrate migrate-create generate
+.PHONY: dev dev-drop dev-logs migrate migrate-create generate seed setup
 
 dev:
 	@echo "[dev]: Starting containers..."
@@ -27,3 +27,10 @@ generate:
 	@echo "[prisma]: Generating client..."
 	@docker compose exec backend npx prisma generate
 	@echo "[prisma]: Done"
+
+seed:
+	@echo "[seed]: Running seed..."
+	@docker compose exec backend npx ts-node -r tsconfig-paths/register prisma/seed.ts
+	@echo "[seed]: Done"
+
+setup: migrate seed

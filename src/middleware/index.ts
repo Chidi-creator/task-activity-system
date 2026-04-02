@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-import authRoutes from "@deliverymen/auth.routes";
+import authRoutes from "@deliverymen/auth.delivery";
 
 const app = express();
 const middleware = new Middleware(app);
