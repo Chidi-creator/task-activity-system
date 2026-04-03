@@ -1,5 +1,7 @@
+const isProd = process.env.NODE_ENV === "production";
+
 export const redisConfig = {
-  url: process.env.REDIS_URL as string,
+  url: (isProd ? process.env.REDIS_URL_PROD : process.env.REDIS_URL_DEV) as string,
   defaultTTL: 60 * 60, // 1 hour in seconds
 };
 

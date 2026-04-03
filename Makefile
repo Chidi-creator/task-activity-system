@@ -1,4 +1,4 @@
-.PHONY: dev dev-drop dev-logs migrate migrate-create generate seed setup
+.PHONY: dev dev-drop dev-logs prod prod-drop prod-logs migrate migrate-create generate seed setup
 
 dev:
 	@echo "[dev]: Starting containers..."
@@ -12,6 +12,19 @@ dev-drop:
 
 dev-logs:
 	@docker compose logs -f backend
+
+prod:
+	@echo "[prod]: Building and starting production container..."
+	@docker compose -f docker-compose.prod.yml up --build -d
+	@echo "[prod]: Container up — connecting to external Postgres and Redis"
+
+prod-drop:
+	@echo "[prod]: Stopping production container..."
+	@docker compose -f docker-compose.prod.yml down
+	@echo "[prod]: Done"
+
+prod-logs:
+	@docker compose -f docker-compose.prod.yml logs -f backend
 
 migrate:
 	@echo "[migrate]: Applying migrations..."
