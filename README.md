@@ -115,6 +115,9 @@ curl http://localhost:3000/api/v1/healthcheck
 | `make dev` | Build and start all containers |
 | `make dev-drop` | Stop and remove all containers |
 | `make dev-logs` | Tail live backend logs |
+| `make prod` | Build and start production container (uses prod URLs) |
+| `make prod-drop` | Stop production container |
+| `make prod-logs` | Tail live production container logs |
 | `make setup` | Run migrations + seed |
 | `make migrate` | Apply pending migrations |
 | `make migrate-create name=<name>` | Create a new migration |

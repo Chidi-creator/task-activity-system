@@ -41,11 +41,17 @@ COOKIE_NAME=task_activity_session
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=task_activity
-DATABASE_URL="postgresql://postgres:postgres@postgres:5432/task_activity"
 
-# Redis
-REDIS_URL="redis://redis:6379"
+# Database URLs — app picks based on NODE_ENV
+DATABASE_URL_DEV="postgresql://postgres:postgres@postgres:5432/task_activity"
+DATABASE_URL_PROD="postgresql://<user>:<password>@<host>/<db>"
+
+# Redis URLs — app picks based on NODE_ENV
+REDIS_URL_DEV="redis://redis:6379"
+REDIS_URL_PROD="redis://default:<password>@<host>:<port>"
 ```
+
+For local dev you only need the `_DEV` URLs filled in. Set `NODE_ENV=production` and fill in the `_PROD` URLs to test against production services locally.
 
 ---
 
@@ -101,6 +107,9 @@ task-activity Server is up and running!
 | `make dev` | Build and start all containers in the background |
 | `make dev-drop` | Stop and remove all containers |
 | `make dev-logs` | Tail live logs from the backend container |
+| `make prod` | Build and start production container (uses prod URLs) |
+| `make prod-drop` | Stop production container |
+| `make prod-logs` | Tail live production container logs |
 | `make setup` | Run migrations + seed (use on first run or new machine) |
 | `make migrate` | Apply all pending migrations |
 | `make migrate-create name=<name>` | Create a new migration from schema changes |
