@@ -25,7 +25,7 @@ Examples of this:
 
 ---
 
-## What I had to correct or improve
+## Examples of What I had to correct or improve
 
 - **Export pattern** — Claude defaulted to exporting instances (`export default new ClassName()`). I corrected this to exporting classes and instantiating at the call site, which is the right pattern for testability and clarity.
 - **Socket manager design** — The initial implementation didn't use Maps or a singleton. I directed a full redesign.
