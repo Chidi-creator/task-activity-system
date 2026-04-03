@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import AuthUseCase from "@usecases/auth.usecase";
 import AuthService from "@services/auth.service";
 import { responseManager } from "@managers/index";
+import { validateRegister, validateLogin } from "@validation/auth.validation";
 
 class AuthHandler {
   private authUseCase: AuthUseCase;
@@ -12,6 +13,11 @@ class AuthHandler {
     this.authService = new AuthService();
   }
   register = async (req: Request, res: Response): Promise<void> => {
+    const { error } = validateRegister(req.body);
+    if (error) {
+      responseManager.validationError(res, error.details.map((d) => d.message));
+      return;
+    }
     try {
       const user = await this.authUseCase.register(req.body);
       this.authService.setSessionCookie(res, { userId: user.id, email: user.email });
@@ -21,7 +27,12 @@ class AuthHandler {
     }
   }
 
-   login = async (req: Request, res: Response): Promise<void> => {
+  login = async (req: Request, res: Response): Promise<void> => {
+    const { error } = validateLogin(req.body);
+    if (error) {
+      responseManager.validationError(res, error.details.map((d) => d.message));
+      return;
+    }
     try {
       const user = await this.authUseCase.login(req.body);
       this.authService.setSessionCookie(res, { userId: user.id, email: user.email });

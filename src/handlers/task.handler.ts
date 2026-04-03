@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import TaskUseCase from "@usecases/task.usecase";
 import { responseManager } from "@managers/index";
+import { validateCreateTask, validateUpdateTaskStatus } from "@validation/task.validation";
 
 class TaskHandler {
   private taskUseCase: TaskUseCase;
@@ -10,6 +11,11 @@ class TaskHandler {
   }
 
   create = async (req: Request, res: Response): Promise<void> => {
+    const { error } = validateCreateTask(req.body);
+    if (error) {
+      responseManager.validationError(res, error.details.map((d) => d.message));
+      return;
+    }
     try {
       const task = await this.taskUseCase.create(req.user!.userId, req.body);
       responseManager.success(res, task, "Task created", 201);
@@ -28,6 +34,11 @@ class TaskHandler {
   };
 
   updateStatus = async (req: Request, res: Response): Promise<void> => {
+    const { error } = validateUpdateTaskStatus(req.body);
+    if (error) {
+      responseManager.validationError(res, error.details.map((d) => d.message));
+      return;
+    }
     try {
       const task = await this.taskUseCase.updateStatus(
         req.params.id as string,
