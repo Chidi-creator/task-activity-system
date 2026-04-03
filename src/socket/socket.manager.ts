@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { Redis } from "ioredis";
-import cookie from "cookie";
+import { parse as parseCookie } from "cookie";
 import { verifyToken } from "@utils/jwt.util";
 import { jwtConfig } from "@config/jwt.config";
 import { redisConfig } from "@config/redis.config";
@@ -37,9 +37,19 @@ class SocketManager {
 
     this.io.use((socket: Socket, next) => {
       try {
+        // 1. cookie (browser)
+        // 2. auth object (socket.io client: { auth: { token } })
+        // 3. Authorization header (testing tools: Bearer <token>)
         const raw = socket.handshake.headers.cookie ?? "";
-        const cookies = cookie.parse(raw);
-        const token = cookies[jwtConfig.cookieName];
+        const cookies = parseCookie(raw);
+        const authHeader = Array.isArray(socket.handshake.headers.authorization)
+          ? socket.handshake.headers.authorization[0]
+          : socket.handshake.headers.authorization;
+        const bearerToken = authHeader?.startsWith("Bearer ")
+          ? authHeader.slice(7)
+          : undefined;
+        const token = cookies[jwtConfig.cookieName] ?? socket.handshake.auth?.token ?? bearerToken;
+
 
         if (!token) return next(new Error("Unauthorized"));
 
@@ -75,7 +85,12 @@ class SocketManager {
 
   // Uses room `user:<userId>` — works across all instances via Redis adapter
   emitToUser(userId: string, event: string, data: unknown): void {
-    this.io?.to(`user:${userId}`).emit(event, data);
+    const socketId = this.connectedUsers.get(userId);
+    if (socketId) {
+      this.io?.to(socketId).emit(event, data);
+    } else {
+      this.io?.to(`user:${userId}`).emit(event, data);
+    }
   }
 
   emitToAll(event: string, data: unknown): void {
