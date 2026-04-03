@@ -1,4 +1,4 @@
-.PHONY: dev dev-drop dev-logs prod prod-drop prod-logs migrate migrate-create generate seed setup
+.PHONY: dev dev-drop dev-logs prod prod-drop prod-logs prod-migrate migrate migrate-create generate seed setup
 
 dev:
 	@echo "[dev]: Starting containers..."
@@ -25,6 +25,11 @@ prod-drop:
 
 prod-logs:
 	@docker compose -f docker-compose.prod.yml logs -f backend
+
+prod-migrate:
+	@echo "[prod-migrate]: Applying migrations to production database..."
+	@NODE_ENV=production npx prisma migrate deploy
+	@echo "[prod-migrate]: Done"
 
 migrate:
 	@echo "[migrate]: Applying migrations..."
